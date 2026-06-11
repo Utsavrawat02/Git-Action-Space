@@ -3,6 +3,9 @@ name: Country Time Fetcher
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
 
   prepare-matrix:
@@ -18,7 +21,7 @@ jobs:
       - name: Create Dynamic Matrix
         id: matrix
         run: |
-          countries=$(jq -R -s -c 'split("\n")[:-1]' source.txt)
+          countries=$(jq -R -s -c 'split("\n") | map(select(length > 0))' source.txt)
 
           echo "countries=$countries" >> "$GITHUB_OUTPUT"
 
@@ -63,6 +66,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Download All Results
         uses: actions/download-artifact@v4
         with:
@@ -70,13 +76,16 @@ jobs:
 
       - name: Create output.txt
         run: |
-         find results -name "*.txt" -exec cat {} \; > ./output.txt
+          find results -name "*.txt" -exec cat {} \; > output.txt
 
           echo "Final Output:"
           cat output.txt
 
-      - name: Upload Final Output
-        uses: actions/upload-artifact@v4
-        with:
-          name: final-output
-          path: output.txt
+      - name: Commit and Push output.txt
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add output.txt
+          git commit -m "Update output.txt from workflow" || echo "No changes to commit"
+          git push
