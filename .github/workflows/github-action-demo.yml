@@ -13,7 +13,7 @@ jobs:
   Explore-Github-Action:
     runs-on: ubuntu-22.04
     steps:
-      - run: |
+      - run:  |
           echo " The job was automatically triggered by a ${{ github.event_name }} event."
           echo "The Actor name is  ${{ github.actor }}"
         
