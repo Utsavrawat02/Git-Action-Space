@@ -16,8 +16,8 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Print Event Details
-        run: |
+     
+      - run: |
           echo "The job was automatically triggered by a ${{ github.event_name }} event."
           echo "The Actor name is ${{ github.actor }}"
 
