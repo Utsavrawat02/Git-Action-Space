@@ -70,7 +70,7 @@ jobs:
 
       - name: Create output.txt
         run: |
-          find results -name "*.txt" -exec cat {} \; > output.txt
+         find results -name "*.txt" -exec cat {} \; > ./output.txt
 
           echo "Final Output:"
           cat output.txt
